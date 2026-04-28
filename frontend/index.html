@@ -1,12 +1,155 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Entra ID RBAC Dashboard</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/main.jsx"></script>
-  </body>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Production-ready IAM RBAC operations dashboard frontend for Netlify deployment." />
+  <title>IAM RBAC Operations Dashboard</title>
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand-row">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="4" width="16" height="16" rx="4" />
+            <path d="M8 9h8M8 12h8M8 15h5" />
+          </svg>
+        </div>
+        <div class="brand-title">AccessWeave</div>
+        <div class="brand-subtitle">IAM control plane</div>
+      </div>
+      <nav class="side-nav">
+        <div class="nav-group">
+          <div class="nav-label">Overview</div>
+          <button class="nav-item is-active" data-panel="overview">Automation Center <span>Live</span></button>
+          <button class="nav-item" data-panel="roles">Role Catalog <span>248</span></button>
+          <button class="nav-item" data-panel="reviews">Access Reviews <span>18</span></button>
+          <button class="nav-item" data-panel="alerts">Policy Drift <span>7</span></button>
+        </div>
+        <div class="nav-group">
+          <div class="nav-label">Operations</div>
+          <button class="nav-item" data-panel="jobs">Provisioning Jobs <span>42</span></button>
+          <button class="nav-item" data-panel="jml">Joiner Mover Leaver <span>11</span></button>
+          <button class="nav-item" data-panel="sod">SoD Violations <span>5</span></button>
+          <button class="nav-item" data-panel="pam">Privileged Access <span>9</span></button>
+        </div>
+      </nav>
+      <section class="sidebar-card" aria-labelledby="health-title">
+        <div id="health-title" class="nav-label">Automation health</div>
+        <div class="metric-row">
+          <span>Runbook success</span>
+          <strong id="runbookSuccess">98.4</strong>
+        </div>
+        <div class="progress"><span id="runbookSuccessBar" style="width: 98.4%"></span></div>
+        <div class="small-note">Updated from API payload or mock data</div>
+      </section>
+    </aside>
+    <div class="content-shell">
+      <header class="topbar">
+        <div class="search-box" role="search">
+          <span aria-hidden="true">&#8984; K</span>
+          <input id="searchInput" type="search" placeholder="Search users, roles, assignments, approvals" aria-label="Search" />
+        </div>
+        <div class="topbar-actions">
+          <button id="themeToggle" class="icon-btn" aria-label="Switch theme"></button>
+          <button id="refreshBtn" class="ghost-btn">Refresh</button>
+          <button id="exportBtn" class="primary-btn">Export JSON</button>
+        </div>
+      </header>
+      <main id="main" class="main-content">
+        <section class="hero-section">
+          <div>
+            <p class="eyebrow">Production frontend</p>
+            <h1>IAM RBAC access management dashboard</h1>
+            <p class="hero-copy">A production-grade frontend shell for operations teams to monitor role assignments, reviews, access requests, policy drift, and automation jobs. Replace the mock API endpoint with your real backend when ready.</p>
+          </div>
+          <div class="hero-actions">
+            <button class="ghost-btn">Open role matrix</button>
+            <button class="ghost-btn">Sync directory</button>
+          </div>
+        </section>
+        <section class="kpi-grid" aria-label="Key metrics">
+          <article class="kpi-card">
+            <div class="kpi-label">Active roles</div>
+            <div id="kpiRoles" class="kpi-value">248</div>
+            <div class="kpi-meta"><span>42 custom roles</span><span class="good">+6 this week</span></div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-label">Assignments automated</div>
+            <div id="kpiAutomated" class="kpi-value">81</div>
+            <div class="kpi-meta"><span id="kpiAutomatedSub">7,812 / 9,640</span><span class="good">+9</span></div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-label">Pending approvals</div>
+            <div id="kpiApprovals" class="kpi-value">37</div>
+            <div class="kpi-meta"><span>8 high risk</span><span class="warn">Needs review</span></div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-label">Policy drift alerts</div>
+            <div id="kpiDrift" class="kpi-value">7</div>
+            <div class="kpi-meta"><span>3 prod scopes</span><span class="info">Stable 24h</span></div>
+          </article>
+        </section>
+        <section class="panel-grid">
+          <article class="panel-card">
+            <div class="panel-head">
+              <div><div class="kpi-label">Trend</div><h2>Provisioning and review throughput</h2></div>
+              <span class="badge ok">Healthy SLA</span>
+            </div>
+            <div class="panel-body">
+              <div id="throughputChart" class="chart-bars" aria-label="Weekly throughput chart"></div>
+              <div class="legend">
+                <span><i class="dot primary"></i>Provisioned</span>
+                <span><i class="dot blue"></i>Approved</span>
+                <span><i class="dot amber"></i>Exceptions</span>
+              </div>
+            </div>
+          </article>
+          <article class="panel-card">
+            <div class="panel-head">
+              <div><div class="kpi-label">Coverage</div><h2>Assignment by role type</h2></div>
+              <span class="badge neutral">Total assignments</span>
+            </div>
+            <div class="panel-body ring-panel">
+              <div class="ring-chart" aria-hidden="true">
+                <div class="ring-inner"><strong id="ringCenter">81</strong><span>Auto-governed</span></div>
+              </div>
+              <div id="distributionList" class="distribution-list"></div>
+            </div>
+          </article>
+        </section>
+        <section class="bottom-grid">
+          <article class="panel-card">
+            <div class="panel-head">
+              <div><div class="kpi-label">Queue</div><h2>Approval and remediation queue</h2></div>
+              <button class="ghost-btn">Open workflows</button>
+            </div>
+            <div id="queueList" class="panel-body list-stack"></div>
+          </article>
+          <article class="panel-card">
+            <div class="panel-head">
+              <div><div class="kpi-label">Top risks</div><h2>Role and policy insights</h2></div>
+              <span class="badge danger">7 alerts</span>
+            </div>
+            <div class="panel-body">
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Role</th><th>Coverage</th><th>Drift</th><th>Trend</th></tr></thead>
+                  <tbody id="riskTableBody"></tbody>
+                </table>
+              </div>
+              <p class="small-note">This frontend expects JSON from a backend endpoint such as <code>/api/dashboard</code>.</p>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="./assets/app.js" defer></script>
+</body>
 </html>
