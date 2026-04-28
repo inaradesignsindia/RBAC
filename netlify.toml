@@ -1,8 +1,8 @@
 # Netlify config for Entra ID RBAC Dashboard
 # Frontend build settings
 [build]
-  publish = "frontend/dist"
-  command = "cd frontend && npm install && npm run build"
+  publish = "dist"
+  command = "npm install && npm run build"
 
 # API proxy to backend
 # Replace YOUR_BACKEND_URL with your actual backend URL after deployment
